@@ -63,7 +63,7 @@ io.on('connection', function(socket) {
   // LISTENER for requestPing
   socket.on('requestPing', function(data) {
     var player = players[socket.id] || {};
-    player.ping = data;
+    player.ping = Date.now() - data;
     io.sockets.to(socket.id).emit('pingResult', data);
   })
 });

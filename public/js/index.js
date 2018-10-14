@@ -77,14 +77,28 @@ var canvas = document.getElementById('myCanvas');
 canvas.width = 800;
 canvas.height = 600;
 var context = canvas.getContext('2d');
+
+
+
 socket.on('state', function(players) {
   context.clearRect(0, 0, 800, 600);
+
+  var playerList = document.getElementById('player-list');
+
+  // Empty player list
+  playerList.innerHTML = "";
 
   // Draw all players
   for (var id in players) {
     var player = players[id];
     drawPlayer(player);
+
+    // Show player in list
+    var li = document.createElement('p');
+    li.innerHTML = "<li>" + player.name + " (upload: " + player.ping + " ms)" + "</li>";
+    playerList.appendChild(li);
   }
+
 });
 
 socket.on('pingResult', function(data) {
