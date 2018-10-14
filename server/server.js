@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {player} = require('./player.js');
+const {Player} = require('./player.js');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -19,12 +19,19 @@ server.listen(port, () => {
 });
 
 var players = {};
+var ping = -1;
+
+var clients = [];
 
 // A new user has connected
 io.on('connection', function(socket) {
+  clients.push(socket.id);
+
   // LISTENER for users connecting
   socket.on('new player', function() {
-    players[socket.id] = new player(300, 300, 'Cees');
+    players[socket.id] = new Player(300, 300, 'Cees');
+
+    console.log('Player ' + (players[socket.id]).name + ' has joined the game!');
   });
 
   // LISTENER for users disconnecting
@@ -52,6 +59,13 @@ io.on('connection', function(socket) {
       player.y += 5;
     }
   });
+
+  // LISTENER for requestPing
+  socket.on('requestPing', function(data) {
+    var player = players[socket.id] || {};
+    player.ping = data;
+    io.sockets.to(socket.id).emit('pingResult', data);
+  })
 });
 
 setInterval(function() {

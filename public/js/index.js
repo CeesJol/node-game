@@ -26,6 +26,7 @@ var movement = {
 }
 
 var keys = [];
+var myPing = -2;
 
 document.addEventListener('keydown', function(event) {
   keys[event.keyCode] = true;
@@ -63,9 +64,14 @@ document.addEventListener('keyup', function(event) {
 });
 
 socket.emit('new player');
+
 setInterval(function() {
   socket.emit('movement', movement);
 }, 1000 / 60);
+
+setInterval(function() {
+  socket.emit('requestPing', Date.now());
+}, 1000);
 
 var canvas = document.getElementById('myCanvas');
 canvas.width = 800;
@@ -80,6 +86,13 @@ socket.on('state', function(players) {
     drawPlayer(player);
   }
 });
+
+socket.on('pingResult', function(data) {
+  // Draw ping
+  myPing = Date.now() - data;
+
+  document.getElementById('ping').innerHTML = "Ping: " + myPing + " ms";
+})
 
 function drawPlayer(player) {
   context.fillStyle = 'green';
