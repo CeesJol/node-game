@@ -62,6 +62,11 @@ class Rooms {
     return this.getRoom(id).players;
   }
 
+  // Get a list of players of a room that are alive
+  getAlivePlayers(id) {
+    return this.getRoom(id).players.filter((player) => player.alive === true);
+  }
+
   // Add a player to a room
   addPlayer(roomId, player) {
     // console.log(this.getRoom(roomId));
@@ -128,6 +133,8 @@ class Rooms {
       return this.rooms.addRoom();
     }
   }
+
+
 };
 
 module.exports = {Rooms};

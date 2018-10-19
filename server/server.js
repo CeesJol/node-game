@@ -88,11 +88,12 @@ io.on('connection', (socket) => {
 // Update rooms
 setInterval(() => {
   rooms.rooms.forEach(function(room)  {
-    rooms.getPlayers(room.id).forEach((player) => {
-      if (player.alive) {
-        io.to(room.id).emit('update', player);
-      }
-    });
+    io.to(room.id).emit('update', rooms.getAlivePlayers(room.id));
+    // rooms.getPlayers(room.id).forEach((player) => {
+    //   if (player.alive) {
+    //     io.to(room.id).emit('update', player);
+    //   }
+    // });
   });
 }, 1000 / TICKRATE);
 

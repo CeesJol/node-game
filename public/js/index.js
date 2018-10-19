@@ -3,6 +3,9 @@ var socket = io();
 // Store the player's info
 var player;
 
+// Store the players
+var data;
+
 socket.on('connect', function() {
   console.log('Connected to server');
 });
@@ -20,6 +23,7 @@ socket.on('disconnect', function() {
 // Listen to updates from the server
 socket.on('update', function(room) {
   console.log('New message', room);
+  data = room;
 });
 
 jQuery("#join").click(function() {
