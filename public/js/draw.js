@@ -55,8 +55,10 @@ function update() {
       }
     }
 
-    player.x += dx;
-    player.y += dy;
+    if (player) {
+      player.x += dx;
+      player.y += dy;
+    }
 
     // Draw all players
     if (data) {
