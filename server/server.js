@@ -3,71 +3,96 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {Player} = require('./player.js');
+// Utils imports
+const {Rooms} = require('./utils/rooms');
+const {Player} = require('./utils/player');
+const {isRealString} = require('./utils/validation');
+
+// Constants
+const NUMBER_OF_ROOMS = 1;
+const TICKRATE = 1;
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var rooms = new Rooms();
 
 app.use(express.static(publicPath));
 
-// Create server
-server.listen(port, () => {
-  console.log(`Server is up on ${port}`);
-});
+// Create number of rooms
+for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
 
-var players = {};
-var ping = -1;
+  // Add room with ID the size of the current amount of rooms
+  rooms.addRoom(i);
+}
 
-var clients = [];
+io.on('connection', (socket) => {
+  console.log('New user connected');
 
-// A new user has connected
-io.on('connection', function(socket) {
-  clients.push(socket.id);
+  // Create user
+  var me = new Player(socket.id, 0);
 
-  // LISTENER for users connecting
-  socket.on('new player', function() {
-    players[socket.id] = new Player(300, 300, 'Cees');
+  // Add user to a room
+  rooms.addPlayer(0, me);
 
-    console.log('Player ' + (players[socket.id]).name + ' has joined the game!');
+  // Join user to a room
+  socket.join(0);
+
+  // Send player info
+  socket.emit('playerInfo', me);
+
+  // Player joins a room
+  socket.on('join', (data, callback) => {
+    // Check if name is valid
+    if (!isRealString(data.name)) {
+      return callback('A valid user name is required.');
+    }
+
+    var player = rooms.getPlayer(socket.id);
+
+    // Set alive property to true
+    player.alive = true;
+
+    // Update name
+    player.name = data.name;
+
+    // Spawn player
+    player.spawn();
+
+    // User did nothing wrong, provide no error
+    callback();
   });
 
-  // LISTENER for users disconnecting
-  socket.on('disconnect', function() {
-    var player = players[socket.id] || {};
-    console.log('Player ' + player.name + ' has left the game.');
+  // Player leaves a room
+  socket.on('leave', () => {
 
-    // remove disconnected player
-    delete players[socket.id];
   });
 
-  // LISTENER for movement of players
-  socket.on('movement', function(data) {
-    var player = players[socket.id] || {};
-    if (data.left) {
-      player.x -= 5;
-    }
-    if (data.up) {
-      player.y -= 5;
-    }
-    if (data.right) {
-      player.x += 5;
-    }
-    if (data.down) {
-      player.y += 5;
-    }
-  });
-
-  // LISTENER for requestPing
-  socket.on('requestPing', function(data) {
-    var player = players[socket.id] || {};
-    player.ping = Date.now() - data;
-    io.sockets.to(socket.id).emit('pingResult', data);
+  // Player requests ping
+  socket.on('requestPing', (timestamp) => {
+    io.to(socket.id).emit('resultPing', timestamp);
   })
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected from server');
+
+    var player = rooms.removePlayer(socket.id);
+  });
 });
 
-setInterval(function() {
-  io.sockets.emit('state', players);
-}, 1000 / 60);
+// Update rooms
+setInterval(() => {
+  rooms.rooms.forEach(function(room)  {
+    rooms.getPlayers(room.id).forEach((player) => {
+      if (player.alive) {
+        io.to(room.id).emit('update', player);
+      }
+    });
+  });
+}, 1000 / TICKRATE);
+
+server.listen(port, () => {
+  console.log(`Server is up on port ${port}`);
+});
