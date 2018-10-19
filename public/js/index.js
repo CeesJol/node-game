@@ -10,6 +10,7 @@ socket.on('connect', function() {
 // Receive player player info
 socket.on('playerInfo', function(data) {
   player = data;
+  console.log('Joined room ' + data.roomId);
 })
 
 socket.on('disconnect', function() {

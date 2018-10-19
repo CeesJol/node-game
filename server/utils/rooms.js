@@ -1,5 +1,7 @@
 const {Player} = require('./player');
 
+const MAX_SIZE = 3;
+
 class Rooms {
 
   // Set up Rooms list
@@ -7,8 +9,29 @@ class Rooms {
     this.rooms = [];
   }
 
+  // Generate random id
+  randomId() {
+    // return Date.now() + Math.floor(Math.random() * 1e6);
+
+    var length = 10;
+    var result = "Room_";
+
+    var randomChar = () => {
+      var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
+      var val = Math.floor(Math.random() * chars.length);
+      return chars.substr(val, 1);
+    }
+
+    for (var i = 0; i < length; i++) {
+      result += randomChar();
+    }
+
+    return result;
+  }
+
   // Add a room
-  addRoom(id, players) {
+  addRoom(players) {
+    var id = this.randomId();
     var players = players || [];
     var room = {id, players};
     this.rooms.push(room);
@@ -83,6 +106,27 @@ class Rooms {
 
     // Return the removed player
     return cur;
+  }
+
+  // Find the best room for a user to join
+  // NOTE: this function is not working very well...
+  findBestRoom() {
+    var bestRoom;
+
+    for (var room of this.rooms) {
+      if (room.players.length < MAX_SIZE) {
+        bestRoom = room;
+        break;
+      }
+    }
+
+    if (bestRoom) {
+      // We found a room, return it
+      return bestRoom;
+    } else {
+      // All rooms are full, make a new room
+      return this.rooms.addRoom();
+    }
   }
 };
 

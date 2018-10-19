@@ -5,6 +5,7 @@ class Player {
     this.id = id;
     this.roomId = roomId;
     this.alive = false;
+    this.name = undefined;
   }
 
   spawn() {

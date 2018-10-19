@@ -9,7 +9,7 @@ const {Player} = require('./utils/player');
 const {isRealString} = require('./utils/validation');
 
 // Constants
-const NUMBER_OF_ROOMS = 1;
+const NUMBER_OF_ROOMS = 2;
 const TICKRATE = 1;
 
 const publicPath = path.join(__dirname, '../public');
@@ -23,22 +23,25 @@ app.use(express.static(publicPath));
 
 // Create number of rooms
 for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
+  var room = rooms.addRoom();
 
-  // Add room with ID the size of the current amount of rooms
-  rooms.addRoom(i);
+  console.log('Created new room with id ' + room.id);
 }
 
 io.on('connection', (socket) => {
   console.log('New user connected');
 
+  // Find best room
+  var room = rooms.findBestRoom();
+
   // Create user
-  var me = new Player(socket.id, 0);
+  var me = new Player(socket.id, room.id);
 
   // Add user to a room
-  rooms.addPlayer(0, me);
+  rooms.addPlayer(room.id, me);
 
   // Join user to a room
-  socket.join(0);
+  socket.join(room.id);
 
   // Send player info
   socket.emit('playerInfo', me);

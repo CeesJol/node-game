@@ -5,6 +5,7 @@ const {Player} = require('./player');
 
 describe('Rooms', () => {
   var rooms;
+  var player;
 
   beforeEach(() => {
     rooms = new Rooms();
@@ -16,17 +17,27 @@ describe('Rooms', () => {
       id: 1,
       players: [new Player(42, 1)]
     }];
+
+    player = new Player(1, 2);
   });
 
-  it('should add a room', () => {
+  it('should add a room with players', () => {
     var rooms = new Rooms();
     var room = {
-      id: 123,
+      players: [player]
+    };
+    var resRoom = rooms.addRoom(room.players);
+
+    expect(rooms.rooms[0].players).toEqual(room.players);
+  });
+  it('should add a room without players', () => {
+    var rooms = new Rooms();
+    var room = {
       players: []
     };
-    var resRoom = rooms.addRoom(room.id);
+    var resRoom = rooms.addRoom();
 
-    expect(rooms.rooms).toEqual([room]);
+    expect(rooms.rooms[0].players).toEqual(room.players);
   });
 
   it('should remove a room', () => {
@@ -106,6 +117,12 @@ describe('Rooms', () => {
     // Is the player actually removed?
     expect(rooms.rooms[1].players.length).toEqual(startLength - 1);
   });
+
+  it('should find best room', () => {
+    var bestRoom = rooms.findBestRoom();
+
+    expect(bestRoom).toEqual(rooms.rooms[0]);
+  })
 
 
 
