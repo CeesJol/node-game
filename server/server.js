@@ -1,3 +1,5 @@
+console.log('Starting server...');
+
 const path = require('path');
 const http = require('http');
 const express = require('express');
@@ -10,7 +12,7 @@ const {isRealString} = require('./utils/validation');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
-const TICKRATE = 1;
+const TICKRATE = 64;
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -76,10 +78,23 @@ io.on('connection', (socket) => {
   // Player requests ping
   socket.on('requestPing', (timestamp) => {
     io.to(socket.id).emit('resultPing', timestamp);
-  })
+  });
+
+  // Player moves
+  // data: player, dx, dy
+  socket.on('movement', (data) => {
+    var id = data.player.id;
+
+    var player = rooms.getPlayer(socket.id);
+
+    player.x += data.dx;
+    player.y += data.dy;
+
+    // console.log(id);
+  });
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected from server');
+    console.log('User disconnected from server');
 
     var player = rooms.removePlayer(socket.id);
   });

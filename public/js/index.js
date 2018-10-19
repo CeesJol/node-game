@@ -22,21 +22,6 @@ socket.on('disconnect', function() {
 
 // Listen to updates from the server
 socket.on('update', function(room) {
-  console.log('New message', room);
+  // console.log('New message', room);
   data = room;
-});
-
-jQuery("#join").click(function() {
-  var name = jQuery('#name').val();
-
-  // Send join request to server
-  socket.emit('join', { name }, function(err) {
-    if (err) {
-      console.log('Whoops...');
-      alert(err);
-    } else {
-      console.log('Nice!');
-      jQuery('#start').hide();
-    }
-  });
 });
