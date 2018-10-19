@@ -43,19 +43,19 @@ function update() {
         dy = 0;
 
     // Check every pressed key
-    for (var key of keys) {
-      if (key === keyInput.top) {
-        dy = -player.speed;
-      } else if (key === keyInput.left) {
-        dx = -player.speed;
-      } else if (key === keyInput.down) {
-        dy = player.speed;
-      } else if (key === keyInput.right) {
-        dx = player.speed;
-      }
-    }
-
     if (player) {
+      for (var key of keys) {
+        if (key === keyInput.top) {
+          dy = -player.speed;
+        } else if (key === keyInput.left) {
+          dx = -player.speed;
+        } else if (key === keyInput.down) {
+          dy = player.speed;
+        } else if (key === keyInput.right) {
+          dx = player.speed;
+        }
+      }
+
       player.x += dx;
       player.y += dy;
     }
