@@ -13,6 +13,7 @@ const {isRealString} = require('./utils/validation');
 // Constants
 const NUMBER_OF_ROOMS = 2;
 const TICKRATE = 64;
+const MAX_USERNAME_LENGTH = 10;
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -48,11 +49,18 @@ io.on('connection', (socket) => {
   // Send player info
   socket.emit('playerInfo', me);
 
+  // Send general info
+  socket.emit('info', {
+    MAX_USERNAME_LENGTH
+  });
+
   // Player joins a room
   socket.on('join', (data, callback) => {
     // Check if name is valid
     if (!isRealString(data.name)) {
       return callback('A valid user name is required.');
+    } else if (data.name.length > MAX_USERNAME_LENGTH) {
+      return callback('User name is too long. (max 10 characters)');
     }
 
     var player = rooms.getPlayer(socket.id);
@@ -89,8 +97,6 @@ io.on('connection', (socket) => {
 
     player.x += data.dx;
     player.y += data.dy;
-
-    // console.log(id);
   });
 
   socket.on('disconnect', () => {

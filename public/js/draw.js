@@ -5,6 +5,8 @@ var ctx = canvas.getContext('2d');
 var width = window.innerWidth,
     height = window.innerHeight;
 
+var fontSize = 20;
+
 // input variables
 // TODO make a settings file
 var keyInput = {
@@ -22,6 +24,8 @@ function main() {
 
     width = canvas.width;
     height = canvas.height;
+
+    ctx.font = fontSize + 'px Arial';
 } main();
 
 function update() {
@@ -31,14 +35,6 @@ function update() {
     ctx.beginPath();
 
     // ---- Hande input ----
-    // Store possible movements
-    var movement = {
-      top: false,
-      left: false,
-      down: false,
-      right: false
-    };
-
     var dx = 0,
         dy = 0;
 
@@ -63,7 +59,7 @@ function update() {
     // Draw all players
     if (data) {
       for (var i = 0; i < data.length; i++) {
-        drawPlayer(data[i].x, data[i].y, data[i].color, data[i].size);
+        drawPlayer(data[i].x, data[i].y, data[i].color, data[i].size, data[i].name);
       }
     }
 
@@ -76,11 +72,20 @@ function update() {
 }
 
 // Draw a player
-function drawPlayer(x, y, color, size) {
+function drawPlayer(x, y, color, size, name) {
+  // Draw blob
   ctx.beginPath();
   ctx.fillStyle = color;
   ctx.arc(x, y, size , 0, 2 * Math.PI);
   ctx.fill();
+  ctx.closePath();
+
+  // Draw user name
+  ctx.beginPath();
+  ctx.fillStyle = 'white';
+  var width = ctx.measureText(name).width;
+  ctx.textBaseLine = 'middle';
+  ctx.fillText(name, x - width / 2, y + fontSize / 4);
   ctx.closePath();
 }
 

@@ -6,6 +6,9 @@ var player;
 // Store the players
 var data;
 
+// Store maxlength. default 10
+var MAX_USERNAME_LENGTH = 10;
+
 socket.on('connect', function() {
   console.log('Connected to server');
 
@@ -14,11 +17,17 @@ socket.on('connect', function() {
   jQuery('#error').hide();
 });
 
-// Receive player player info
+// Receive player info
 socket.on('playerInfo', function(data) {
   player = data;
   console.log('Joined room ' + data.roomId);
-})
+});
+
+// Receive general info
+socket.on('info', function(data) {
+  MAX_USERNAME_LENGTH = data.MAX_USERNAME_LENGTH;
+  jQuery('#name').attr('maxlength', MAX_USERNAME_LENGTH);
+});
 
 socket.on('disconnect', function() {
   console.log('Disconnected from server');
