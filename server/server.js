@@ -91,8 +91,6 @@ io.on('connection', (socket) => {
   // Player moves
   // data: player, dx, dy
   socket.on('movement', (data) => {
-    var id = data.player.id;
-
     var player = rooms.getPlayer(socket.id);
 
     player.x += data.dx;

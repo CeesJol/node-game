@@ -63,9 +63,10 @@ function update() {
       }
     }
 
-    // Emit movement to server
-    // TODO player can be removed
-    socket.emit('movement', { player, dx, dy });
+    if (player) {
+      // Emit movement to server
+      socket.emit('movement', { dx, dy });
+    }
 
     // Draw the pixels on the screen.
     window.requestAnimationFrame(update);
