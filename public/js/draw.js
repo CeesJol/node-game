@@ -68,6 +68,7 @@ function update() {
     }
 
     // Emit movement to server
+    // TODO player can be removed
     socket.emit('movement', { player, dx, dy });
 
     // Draw the pixels on the screen.
@@ -76,9 +77,11 @@ function update() {
 
 // Draw a player
 function drawPlayer(x, y, color, size) {
+  ctx.beginPath();
   ctx.fillStyle = color;
   ctx.arc(x, y, size , 0, 2 * Math.PI);
   ctx.fill();
+  ctx.closePath();
 }
 
 // Start the game.
