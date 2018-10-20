@@ -12,7 +12,7 @@ const {isRealString} = require('./utils/validation');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
-const TICKRATE = 64;
+const TICKRATE = 1;
 const MAX_USERNAME_LENGTH = 10;
 
 const publicPath = path.join(__dirname, '../public');
@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
   });
 
   // Player moves
-  // data: player, dx, dy
+  // data: dx, dy
   socket.on('movement', (data) => {
     var player = rooms.getPlayer(socket.id);
 

@@ -7,6 +7,9 @@ var width = window.innerWidth,
 
 var fontSize = 20;
 
+var dx = 0,
+    dy = 0;
+
 // input variables
 // TODO make a settings file
 var keyInput = {
@@ -34,37 +37,24 @@ function update() {
 
     ctx.beginPath();
 
-    // ---- Hande input ----
-    var dx = 0,
-        dy = 0;
+    // Handle local input
+    handleInput();
 
-    // Check every pressed key
-    if (player) {
-      for (var key of keys) {
-        if (key === keyInput.top) {
-          dy = -player.speed;
-        } else if (key === keyInput.left) {
-          dx = -player.speed;
-        } else if (key === keyInput.down) {
-          dy = player.speed;
-        } else if (key === keyInput.right) {
-          dx = player.speed;
-        }
+    // Update all players
+    for (var entity of data) {
+      // Update the local player locally as well.
+      // Not necessary, but makes the game smoother
+      if (player && entity.id === player.id) {
+        entity.x += dx;
+        entity.y += dy;
       }
 
-      player.x += dx;
-      player.y += dy;
+      // Draw the player
+      drawPlayer(entity.x, entity.y, entity.color, entity.size, entity.name);
     }
 
-    // Draw all players
-    if (data) {
-      for (var i = 0; i < data.length; i++) {
-        drawPlayer(data[i].x, data[i].y, data[i].color, data[i].size, data[i].name);
-      }
-    }
-
-    if (player) {
-      // Emit movement to server
+    // Send movement (if any) to server
+    if (player && (dx !== 0 || dy !== 0)) {
       socket.emit('movement', { dx, dy });
     }
 

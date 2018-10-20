@@ -4,7 +4,7 @@ var socket = io();
 var player;
 
 // Store the players
-var data;
+var data = [];
 
 // Store maxlength. default 10
 var MAX_USERNAME_LENGTH = 10;
