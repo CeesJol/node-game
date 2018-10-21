@@ -5,7 +5,7 @@ class Player {
     this.id = id;
     this.roomId = roomId;
     this.alive = false;
-    this.name = undefined;
+    this.name = "player";
     this.color = this.getRandomColor();
     this.size = 50;
     this.speed = 1;

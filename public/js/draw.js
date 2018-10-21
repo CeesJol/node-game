@@ -45,15 +45,17 @@ function update() {
 
     // Update all players
     for (var entity of data) {
-      // Update the local player locally as well.
-      // Not necessary, but makes the game smoother
-      if (player && entity.id === player.id) {
-        entity.x += dx;
-        entity.y += dy;
-      }
+      if (player) {
+        if (entity.id === player.id) {
 
-      // Draw the player
-      drawPlayer(entity.x, entity.y, entity.color, entity.size, entity.name);
+          // Draw this player
+          drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
+        } else {
+
+          // Draw some other player
+          drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
+        }
+      }
 
       // Add player to the list of players
       ol.append(jQuery('<li></li>').text(entity.name));

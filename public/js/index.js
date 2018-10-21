@@ -41,4 +41,13 @@ socket.on('disconnect', function() {
 socket.on('update', function(room) {
   // console.log('New message', room);
   data = room;
+
+  // Store player
+  if (player) {
+    for (var entity of data) {
+      if (entity.id == player.id) {
+        player = entity;
+      }
+    }
+  }
 });
