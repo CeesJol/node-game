@@ -40,6 +40,9 @@ function update() {
     // Handle local input
     handleInput();
 
+    // Reset player list
+    var ol = jQuery('<ol></ol>');
+
     // Update all players
     for (var entity of data) {
       // Update the local player locally as well.
@@ -51,7 +54,13 @@ function update() {
 
       // Draw the player
       drawPlayer(entity.x, entity.y, entity.color, entity.size, entity.name);
+
+      // Add player to the list of players
+      ol.append(jQuery('<li></li>').text(entity.name));
     }
+
+    // Draw list of players
+    jQuery('#player-list').html(ol);
 
     // Send movement (if any) to server
     if (player && (dx !== 0 || dy !== 0)) {
