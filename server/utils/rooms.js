@@ -33,7 +33,8 @@ class Rooms {
   addRoom(players) {
     var id = this.randomId();
     var players = players || [];
-    var room = {id, players};
+    var size = 400;
+    var room = {id, players, size};
     this.rooms.push(room);
     return room;
   }
@@ -114,7 +115,6 @@ class Rooms {
   }
 
   // Find the best room for a user to join
-  // NOTE: this function is not working very well...
   findBestRoom() {
     var bestRoom;
 
@@ -133,8 +133,6 @@ class Rooms {
       return this.rooms.addRoom();
     }
   }
-
-
 };
 
 module.exports = {Rooms};

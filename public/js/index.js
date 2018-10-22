@@ -20,7 +20,7 @@ socket.on('connect', function() {
 // Receive player info
 socket.on('playerInfo', function(data) {
   player = data;
-  console.log('Joined room ' + data.roomId);
+  console.log('Joined room ' + data.room.id);
 });
 
 // Receive general info

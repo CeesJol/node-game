@@ -8,7 +8,7 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString} = require('./utils/validation');
+const {isRealString} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   var room = rooms.findBestRoom();
 
   // Create user
-  var me = new Player(socket.id, room.id);
+  var me = new Player(socket.id, room.id, room.size);
 
   // Add user to a room
   rooms.addPlayer(room.id, me);
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
     player.name = data.name;
 
     // Spawn player
-    player.spawn();
+    player.spawn(rooms.getRoom(player.room.id).size);
 
     // User did nothing wrong, provide no error
     callback();
@@ -92,9 +92,23 @@ io.on('connection', (socket) => {
   // data: dx, dy
   socket.on('movement', (data) => {
     var player = rooms.getPlayer(socket.id);
+    var room = rooms.getRoom(player.room.id);
 
     player.x += data.dx;
     player.y += data.dy;
+
+    // Within border check
+    if (player.x < player.size) {
+      player.x = player.size;
+    } else if (player.x > room.size - player.size) {
+      player.x = room.size - player.size;
+    }
+
+    if (player.y < player.size) {
+      player.y = player.size;
+    } else if (player.y > room.size - player.size) {
+      player.y = room.size - player.size;
+    }
   });
 
   socket.on('disconnect', () => {
@@ -108,11 +122,6 @@ io.on('connection', (socket) => {
 setInterval(() => {
   rooms.rooms.forEach(function(room)  {
     io.to(room.id).emit('update', rooms.getAlivePlayers(room.id));
-    // rooms.getPlayers(room.id).forEach((player) => {
-    //   if (player.alive) {
-    //     io.to(room.id).emit('update', player);
-    //   }
-    // });
   });
 }, 1000 / TICKRATE);
 

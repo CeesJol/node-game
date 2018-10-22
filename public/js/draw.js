@@ -23,7 +23,7 @@ var keyInput = {
 function main() {
     canvas.width = window.innerWidth;
     // canvas.height = window.innerHeight;
-    canvas.height = 100;
+    canvas.height = 300;
 
     width = canvas.width;
     height = canvas.height;
@@ -42,6 +42,19 @@ function update() {
 
     // Reset player list
     var ol = jQuery('<ol></ol>');
+
+    // Get room size (default: 400)
+    var roomSize = (player) ? player.room.size : 400;
+
+    var x = (player && player.alive) ? player.x : roomSize / 2;
+    var y = (player && player.alive) ? player.y : roomSize / 2;
+
+    // Draw map border
+    ctx.beginPath();
+    ctx.strokeStyle = 'black';
+    ctx.rect(width / 2 - x, height / 2 - y, roomSize, roomSize);
+    ctx.stroke();
+    ctx.closePath();
 
     // Update all players
     for (var entity of data) {
