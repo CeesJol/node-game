@@ -125,7 +125,11 @@ setInterval(() => {
     for(var player of rooms.getAlivePlayers(room.id)) {
       // Check for player / pellet interaction
       for (var pellet of rooms.getPellets(room.id)) {
+
+        // Check for collision between two blobs: player and pellet
         if (pyth(player.x - pellet.x, player.y - pellet.y) <= player.size + pellet.size) {
+
+          // Player eats the pellet
           rooms.eatPellet(player, pellet);
         }
       }

@@ -47,8 +47,8 @@ function update() {
     drawBorders();
 
     // Update all players
-    if (data) {
-      for (var entity of data.players) {
+    if (players && pellets) {
+      for (var entity of players) {
         if (player) {
           if (entity.id === player.id) {
 
@@ -67,7 +67,7 @@ function update() {
 
       // Update all pellets
       if (player) {
-        for (var pellet of data.pellets) {
+        for (var pellet of pellets) {
           drawPellet(pellet);
         }
       }

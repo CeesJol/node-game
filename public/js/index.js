@@ -4,7 +4,8 @@ var socket = io();
 var player;
 
 // Store the players, and pellets
-var data = [];
+var players = undefined,
+    pellets = undefined;
 
 // Store maxlength. default 10
 var MAX_USERNAME_LENGTH = 10;
@@ -39,8 +40,9 @@ socket.on('disconnect', function() {
 
 // TODO MERGE THIS SHIZZLE
 // Listen to updates from the server
-socket.on('update', function(package) {
-  data = package;
+socket.on('update', function(data) {
+  players = data.players;
+  pellets = data.pellets;
 
   // Store player
   if (player) {
