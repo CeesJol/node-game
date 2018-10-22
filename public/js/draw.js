@@ -22,8 +22,7 @@ var keyInput = {
 // Initialization function that also is executed when you change the display size.
 function main() {
     canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
-    canvas.height = 300;
+    canvas.height = window.innerHeight;
 
     width = canvas.width;
     height = canvas.height;

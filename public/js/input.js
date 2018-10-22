@@ -65,8 +65,8 @@ function handleInput() {
     var tempdx = 1 * (mouse.x - (width / 2));
     var tempdy = 1 * (mouse.y - (height / 2));
 
-    dx = tempdx / Math.abs(Math.abs(tempdx) + Math.abs(tempdy));
-    dy = tempdy / Math.abs(Math.abs(tempdx) + Math.abs(tempdy));
+    dx = tempdx / (Math.abs(tempdx) + Math.abs(tempdy));
+    dy = tempdy / (Math.abs(tempdx) + Math.abs(tempdy));
 
     if (Math.abs(tempdx) < 10 && Math.abs(tempdy) < 10) {
       dx = 0;
@@ -88,7 +88,5 @@ function handleInput() {
     } else if (player.y > player.room.size - player.size) {
       player.y = player.room.size - player.size;
     }
-
-    // console.log(player.x);
   }
 }
