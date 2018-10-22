@@ -30,6 +30,7 @@ function main() {
     ctx.font = fontSize + 'px Arial';
 } main();
 
+// TODO ffs all these if(player)s are annoying
 function update() {
     // Clear the current display.
     ctx.clearRect(0, 0, width, height);
@@ -42,21 +43,11 @@ function update() {
     // Reset player list
     var ol = jQuery('<ol></ol>');
 
-    // Get room size (default: 400)
-    var roomSize = (player) ? player.room.size : 400;
-
-    var x = (player && player.alive) ? player.x : roomSize / 2;
-    var y = (player && player.alive) ? player.y : roomSize / 2;
-
     // Draw map border
-    ctx.beginPath();
-    ctx.strokeStyle = 'black';
-    ctx.rect(width / 2 - x, height / 2 - y, roomSize, roomSize);
-    ctx.stroke();
-    ctx.closePath();
+    drawBorders();
 
     // Update all players
-    for (var entity of data) {
+    for (var entity of data.players) {
       if (player) {
         if (entity.id === player.id) {
 
@@ -71,6 +62,13 @@ function update() {
 
       // Add player to the list of players
       ol.append(jQuery('<li></li>').text(entity.name));
+    }
+
+    // Update all pellets
+    if (player) {
+      for (var pellet of data.pellets) {
+        drawPellet(pellet);
+      }
     }
 
     // Draw list of players
@@ -90,7 +88,7 @@ function drawPlayer(x, y, color, size, name) {
   // Draw blob
   ctx.beginPath();
   ctx.fillStyle = color;
-  ctx.arc(x, y, size , 0, 2 * Math.PI);
+  ctx.arc(x, y, size, 0, 2 * Math.PI);
   ctx.fill();
   ctx.closePath();
 
@@ -100,6 +98,30 @@ function drawPlayer(x, y, color, size, name) {
   var width = ctx.measureText(name).width;
   ctx.textBaseLine = 'middle';
   ctx.fillText(name, x - width / 2, y + fontSize / 4);
+  ctx.closePath();
+}
+
+// Draw a pellet
+function drawPellet(pellet) {
+  ctx.beginPath();
+  ctx.fillStyle = 'red';
+  ctx.arc(width / 2 - player.x + pellet.x, height / 2 - player.y + pellet.y, pellet.size, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.closePath();
+}
+
+// Draw map borders
+function drawBorders() {
+  // Get room size (default: 400)
+  var roomSize = (player) ? player.room.size : 400;
+
+  var x = (player && player.alive) ? player.x : roomSize / 2;
+  var y = (player && player.alive) ? player.y : roomSize / 2;
+
+  ctx.beginPath();
+  ctx.strokeStyle = 'black';
+  ctx.rect(width / 2 - x, height / 2 - y, roomSize, roomSize);
+  ctx.stroke();
   ctx.closePath();
 }
 

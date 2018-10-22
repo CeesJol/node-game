@@ -1,4 +1,6 @@
 const {Player} = require('./player');
+const {Pellet} = require('./pellet');
+const {randomId, rng} = require('./general');
 
 const MAX_SIZE = 3;
 
@@ -9,32 +11,13 @@ class Rooms {
     this.rooms = [];
   }
 
-  // Generate random id
-  randomId() {
-    // return Date.now() + Math.floor(Math.random() * 1e6);
-
-    var length = 10;
-    var result = "Room_";
-
-    var randomChar = () => {
-      var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
-      var val = Math.floor(Math.random() * chars.length);
-      return chars.substr(val, 1);
-    }
-
-    for (var i = 0; i < length; i++) {
-      result += randomChar();
-    }
-
-    return result;
-  }
-
   // Add a room
   addRoom(players) {
-    var id = this.randomId();
-    var players = players || [];
+    var id = randomId();
     var size = 400;
-    var room = {id, players, size};
+    var players = players || [];
+    var pellets = [];
+    var room = {id, size, players, pellets};
     this.rooms.push(room);
     return room;
   }
@@ -70,10 +53,44 @@ class Rooms {
 
   // Add a player to a room
   addPlayer(roomId, player) {
-    // console.log(this.getRoom(roomId));
     this.getRoom(roomId).players.push(player);
 
     return player;
+  }
+
+  // Add a pellet to a room
+  spawnPellet(roomId) {
+    var pellet = new Pellet(roomId);
+
+    var roomSize = this.getRoom(roomId).size;
+
+    pellet.x = rng(pellet.size, roomSize - pellet.size);
+    pellet.y = rng(pellet.size, roomSize - pellet.size);
+
+    this.getRoom(roomId).pellets.push(pellet);
+
+    return pellet;
+  }
+
+  // Get a list of pellets in a room
+  getPellets(roomId) {
+    return this.getRoom(roomId).pellets;
+  }
+
+  // Player eats a pellet
+  eatPellet(player, pellet) {
+    // Increase player size
+    player.size += pellet.value;
+
+    // Remove pellet
+    // Get pellets array
+    var pellets = this.getPellets(player.room.id);
+
+    // Remove it from the array
+    pellets = pellets.filter((pel) => pel.id !== pellet.id);
+
+    // Set pellets
+    this.getRoom(player.room.id).pellets = pellets;
   }
 
   // Get a player from a room
@@ -126,12 +143,25 @@ class Rooms {
     }
 
     if (bestRoom) {
+
       // We found a room, return it
       return bestRoom;
     } else {
+
       // All rooms are full, make a new room
       return this.rooms.addRoom();
     }
+  }
+
+  // Spawn the player somewhere in the room
+  // TODO spawn player not close to other players
+  spawnPlayer(player) {
+    var roomSize = this.getRoom(player.room.id).size;
+
+    player.x = rng(player.size, roomSize - player.size);
+    player.y = rng(player.size, roomSize - player.size);
+
+    return player;
   }
 };
 

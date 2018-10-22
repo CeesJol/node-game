@@ -3,6 +3,7 @@ const expect = require('expect');
 const {Rooms} = require('./rooms');
 const {Player} = require('./player');
 
+// NOTE OUTDATED AF
 describe('Player', () => {
   beforeEach(() => {
     rooms = new Rooms();

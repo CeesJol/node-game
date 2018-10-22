@@ -12,13 +12,17 @@ describe('Rooms', () => {
 
     rooms.rooms = [{
       id: 0,
-      players: []
+      size: 400,
+      players: [],
+      pellets: []
     }, {
       id: 1,
-      players: [new Player(42, 1)]
+      size: 400,
+      players: [new Player(42, 1, 400)],
+      pellets: []
     }];
 
-    player = new Player(1, 2);
+    player = new Player(1, 2, 400);
   });
 
   it('should add a room with players', () => {
@@ -122,9 +126,26 @@ describe('Rooms', () => {
     var bestRoom = rooms.findBestRoom();
 
     expect(bestRoom).toEqual(rooms.rooms[0]);
-  })
+  });
 
+  it('should spawn the player', () => {
+    var player = rooms.rooms[1].players[0];
 
+    var oldX = player.x;
+    var oldY = player.y;
+
+    rooms.spawnPlayer(player);
+
+    // Expect x and y to be different (no, its not flaky)
+    expect(player.x).not.toEqual(oldX);
+    expect(player.y).not.toEqual(oldY);
+
+    // Expect and x and y to be within the room boundaries
+    expect(player.x >= player.size).toEqual(true);
+    expect(player.x <= rooms.rooms[1].size + player.size).toEqual(true);
+    expect(player.y >= player.size).toEqual(true);
+    expect(player.y <= rooms.rooms[1].size + player.size).toEqual(true);
+  });
 
 
 

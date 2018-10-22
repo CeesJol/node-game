@@ -3,7 +3,7 @@ var socket = io();
 // Store the player's info
 var player;
 
-// Store the players
+// Store the players, and pellets
 var data = [];
 
 // Store maxlength. default 10
@@ -37,14 +37,14 @@ socket.on('disconnect', function() {
   jQuery('#error').show();
 });
 
+// TODO MERGE THIS SHIZZLE
 // Listen to updates from the server
-socket.on('update', function(room) {
-  // console.log('New message', room);
-  data = room;
+socket.on('update', function(package) {
+  data = package;
 
   // Store player
   if (player) {
-    for (var entity of data) {
+    for (var entity of data.players) {
       if (entity.id == player.id) {
         player = entity;
       }

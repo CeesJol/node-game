@@ -8,7 +8,7 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString} = require('./utils/general');
+const {isRealString, pyth} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
@@ -27,6 +27,8 @@ app.use(express.static(publicPath));
 // Create number of rooms
 for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
   var room = rooms.addRoom();
+
+  rooms.spawnPellet(room.id);
 
   console.log('Created new room with id ' + room.id);
 }
@@ -72,7 +74,7 @@ io.on('connection', (socket) => {
     player.name = data.name;
 
     // Spawn player
-    player.spawn(rooms.getRoom(player.room.id).size);
+    rooms.spawnPlayer(player);
 
     // User did nothing wrong, provide no error
     callback();
@@ -103,7 +105,6 @@ io.on('connection', (socket) => {
     } else if (player.x > room.size - player.size) {
       player.x = room.size - player.size;
     }
-
     if (player.y < player.size) {
       player.y = player.size;
     } else if (player.y > room.size - player.size) {
@@ -121,7 +122,23 @@ io.on('connection', (socket) => {
 // Update rooms
 setInterval(() => {
   rooms.rooms.forEach(function(room)  {
-    io.to(room.id).emit('update', rooms.getAlivePlayers(room.id));
+    for(var player of rooms.getAlivePlayers(room.id)) {
+      // Check for player / pellet interaction
+      for (var pellet of rooms.getPellets(room.id)) {
+        if (pyth(player.x - pellet.x, player.y - pellet.y) <= player.size + pellet.size) {
+          rooms.eatPellet(player, pellet);
+        }
+      }
+
+      // Check for player / player interaction
+      // ...
+    }
+
+    // Send players and pellets
+    io.to(room.id).emit('update', {
+      players: rooms.getAlivePlayers(room.id),
+      pellets: rooms.getPellets(room.id)
+    });
   });
 }, 1000 / TICKRATE);
 
