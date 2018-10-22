@@ -47,27 +47,29 @@ function update() {
     drawBorders();
 
     // Update all players
-    for (var entity of data.players) {
-      if (player) {
-        if (entity.id === player.id) {
+    if (data) {
+      for (var entity of data.players) {
+        if (player) {
+          if (entity.id === player.id) {
 
-          // Draw this player
-          drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
-        } else {
+            // Draw this player
+            drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
+          } else {
 
-          // Draw some other player
-          drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
+            // Draw some other player
+            drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
+          }
         }
+
+        // Add player to the list of players
+        ol.append(jQuery('<li></li>').text(entity.name));
       }
 
-      // Add player to the list of players
-      ol.append(jQuery('<li></li>').text(entity.name));
-    }
-
-    // Update all pellets
-    if (player) {
-      for (var pellet of data.pellets) {
-        drawPellet(pellet);
+      // Update all pellets
+      if (player) {
+        for (var pellet of data.pellets) {
+          drawPellet(pellet);
+        }
       }
     }
 
