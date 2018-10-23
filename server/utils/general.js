@@ -16,6 +16,10 @@ var pyth = (a, b) => {
   return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 }
 
+var collision = (collider, collidee) => {
+  return pyth(collider.x - collidee.x, collider.y - collidee.y) <= collider.size + collidee.size;
+}
+
 
   // Generate random id
 var randomId = () => {
@@ -37,4 +41,4 @@ var randomId = () => {
   return result;
 }
 
-module.exports = {isRealString, rng, getRandomColor, pyth, randomId};
+module.exports = {isRealString, rng, getRandomColor, pyth, collision, randomId};

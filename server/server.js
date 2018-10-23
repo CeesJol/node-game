@@ -8,7 +8,7 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString, pyth} = require('./utils/general');
+const {isRealString, collision} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
@@ -131,7 +131,8 @@ setInterval(() => {
       for (var pellet of rooms.getPellets(room.id)) {
 
         // Check for collision between two blobs: player and pellet
-        if (pyth(player.x - pellet.x, player.y - pellet.y) <= player.size + pellet.size) {
+        // TODO make a collision method?
+        if (collision(player, pellet)) {
 
           // Player eats the pellet
           rooms.eatPellet(player, pellet);
