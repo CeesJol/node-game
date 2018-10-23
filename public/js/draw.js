@@ -127,6 +127,7 @@ function drawScore() {
 }
 
 // Draw list of players
+// TODO sort based on highscore
 function drawPlayerNames() {
   var marginRight = 120;
   ctx.fillStyle = 'black';
@@ -134,7 +135,7 @@ function drawPlayerNames() {
   for (var i = 0; i < Math.min(10, players.length); i++) {
     var entity = players[i];
 
-    ctx.fillText((i + 1) + ". " + player.name, width - marginRight, 10 + fontSize * (i + 2));
+    ctx.fillText((i + 1) + ". " + entity.name, width - marginRight, 10 + fontSize * (i + 2));
   }
 }
 
