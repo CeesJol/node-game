@@ -14,8 +14,8 @@ var player = {
 };
 
 // Store the players, and pellets
-var players = undefined,
-    pellets = undefined;
+var players = [],
+    pellets = [];
 
 // Store maxlength. default 10
 var MAX_USERNAME_LENGTH = 10;
