@@ -28,8 +28,6 @@ app.use(express.static(publicPath));
 for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
   var room = rooms.addRoom();
 
-  rooms.spawnPellet(room.id);
-
   console.log('Created new room with id ' + room.id);
 }
 
@@ -98,6 +96,11 @@ io.on('connection', (socket) => {
     if (!player) return;
 
     var room = rooms.getRoom(player.room.id);
+
+    // Make sure data is normalized
+    var sum = Math.abs(data.dx) + Math.abs(data.dy);
+    data.dx = (data.dx / sum) * player.speed;
+    data.dy = (data.dy / sum) * player.speed;
 
     player.x += data.dx;
     player.y += data.dy;

@@ -2,8 +2,10 @@ const {Player} = require('./player');
 const {Pellet} = require('./pellet');
 const {randomId, rng, collision} = require('./general');
 
-const MAX_PLAYER_SIZE = 3;
-const DEFAULT_ROOM_SIZE = 400;
+const MAX_PLAYER_SIZE = 3;          // Maximum amount of players in one room
+const DEFAULT_ROOM_SIZE = 600;      // Default size of the room (both width and height)
+const CHUNK_SIZE = 200;             // Size of one chunk
+const PELLETS_MULTIIPLIER = 0.02;   // Sets amount of pellets in the room
 
 class Rooms {
 
@@ -20,6 +22,12 @@ class Rooms {
     var pellets = [];
     var room = {id, size, players, pellets};
     this.rooms.push(room);
+
+    // Spawn some pellets
+    for (var i = 0; i < DEFAULT_ROOM_SIZE * PELLETS_MULTIIPLIER; i++) {
+      this.spawnPellet(id);
+    }
+
     return room;
   }
 

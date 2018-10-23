@@ -8,7 +8,10 @@ var player = {
   alive: false,
   id: undefined,
   name: "player",
-  room: {id: undefined, size: roomSize},
+  room: {
+    id: undefined,
+    size: roomSize
+  },
   x: roomSize / 2,
   y: roomSize / 2
 };
@@ -70,9 +73,8 @@ socket.on('died', function() {
   // Since we are dead, show join form
   jQuery('#start').show();
 
-  // Set alive to false
-  // TODO wtf is this
+  // Reset player
   player.alive = false;
-  player.x = roomSize / 2;
-  player.y = roomSize / 2;
+  player.x = player.room.size / 2;
+  player.y = player.room.size / 2;
 });

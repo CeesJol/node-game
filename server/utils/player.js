@@ -13,7 +13,7 @@ class Player {
     this.name = "player";
     this.color = getRandomColor();
     this.size = 50; // radius of blob
-    this.speed = 1;
+    this.speed = 2;
   }
 };
 

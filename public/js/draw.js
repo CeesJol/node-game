@@ -40,9 +40,6 @@ function update() {
     // Handle local input
     handleInput();
 
-    // Reset player list
-    var ol = jQuery('<ol></ol>');
-
     // Draw map border
     drawBorders();
 
@@ -57,9 +54,6 @@ function update() {
         // Draw some other player
         drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
       }
-
-      // Add player to the list of players
-      ol.append(jQuery('<li></li>').text(entity.name));
     }
 
     // Update all pellets
@@ -68,7 +62,10 @@ function update() {
     }
 
     // Draw list of players
-    jQuery('#player-list').html(ol);
+    drawPlayerNames();
+
+    // Draw score
+    drawScore();
 
     // Send movement (if any) to server
     if (player.alive && (dx !== 0 || dy !== 0)) {
@@ -119,6 +116,26 @@ function drawBorders() {
   ctx.rect(width / 2 - x, height / 2 - y, roomSize, roomSize);
   ctx.stroke();
   ctx.closePath();
+}
+
+// Draw score
+function drawScore() {
+  if (player.alive) {
+    ctx.fillStyle = 'black';
+    ctx.fillText("score: " + player.size, 10, 10 + fontSize);
+  }
+}
+
+// Draw list of players
+function drawPlayerNames() {
+  var marginRight = 120;
+  ctx.fillStyle = 'black';
+  ctx.fillText("Leaderbord", width - marginRight, 10 + fontSize);
+  for (var i = 0; i < Math.min(10, players.length); i++) {
+    var entity = players[i];
+
+    ctx.fillText((i + 1) + ". " + player.name, width - marginRight, 10 + fontSize * (i + 2));
+  }
 }
 
 // Start the game.

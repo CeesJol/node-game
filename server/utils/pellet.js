@@ -5,7 +5,7 @@ class Pellet {
     this.id = randomId();
     this.x = 0;
     this.y = 0;
-    this.value = 10;
+    this.value = 1;
     this.room = {
       id: roomId
     }
