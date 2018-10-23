@@ -125,22 +125,42 @@ io.on('connection', (socket) => {
 // Update rooms
 setInterval(() => {
   rooms.rooms.forEach(function(room)  {
-    for(var player of rooms.getAlivePlayers(room.id)) {
+    // Get list of players
+    var players = rooms.getAlivePlayers(room.id);
+
+    // Check collision for each player
+    for (var i = 0; i < players.length; i++) {
+      var player = players[i];
+
+      // Check for player / player interaction
+      for (var j = i + 1; j < players.length; j++) {
+        var ply = players[j];
+
+        // Check for collision between the two players
+        if (collision(player, ply)) {
+
+          // If one player is smaller, this player will die
+          // Otherwise, nothing happens :)
+          if (player.size < ply.size) {
+            rooms.kill(player);
+            io.to(player.id).emit('died');
+          } else if (player.size > ply.size) {
+            rooms.kill(ply);
+            io.to(ply.id).emit('died');
+          }
+        }
+      }
 
       // Check for player / pellet interaction
       for (var pellet of rooms.getPellets(room.id)) {
 
         // Check for collision between two blobs: player and pellet
-        // TODO make a collision method?
         if (collision(player, pellet)) {
 
           // Player eats the pellet
           rooms.eatPellet(player, pellet);
         }
       }
-
-      // Check for player / player interaction
-      // ...
     }
 
     // Send players and pellets

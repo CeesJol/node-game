@@ -208,6 +208,13 @@ class Rooms {
 
     return player;
   }
+
+  // Kill a player in the room
+  kill(player) {
+    player.alive = false;
+
+    return player;
+  }
 };
 
 module.exports = {Rooms};

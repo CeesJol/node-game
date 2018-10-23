@@ -48,7 +48,6 @@ socket.on('disconnect', function() {
   jQuery('#error').show();
 });
 
-// TODO MERGE THIS SHIZZLE
 // Listen to updates from the server
 socket.on('update', function(data) {
   players = data.players;
@@ -62,4 +61,18 @@ socket.on('update', function(data) {
       }
     }
   }
+});
+
+// Did you dieded to deaf?
+socket.on('died', function() {
+  console.log("WELP U DIEDED LAWL");
+
+  // Since we are dead, show join form
+  jQuery('#start').show();
+
+  // Set alive to false
+  // TODO wtf is this
+  player.alive = false;
+  player.x = roomSize / 2;
+  player.y = roomSize / 2;
 });
