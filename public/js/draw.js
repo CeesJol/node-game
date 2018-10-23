@@ -47,37 +47,31 @@ function update() {
     drawBorders();
 
     // Update all players
-    if (players && pellets) {
-      for (var entity of players) {
-        if (player) {
-          if (entity.id === player.id) {
+    for (var entity of players) {
+      if (entity.id === player.id) {
 
-            // Draw this player
-            drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
-          } else {
+        // Draw this player
+        drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
+      } else {
 
-            // Draw some other player
-            drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
-          }
-        }
-
-        // Add player to the list of players
-        ol.append(jQuery('<li></li>').text(entity.name));
+        // Draw some other player
+        drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
       }
 
-      // Update all pellets
-      if (player) {
-        for (var pellet of pellets) {
-          drawPellet(pellet);
-        }
-      }
+      // Add player to the list of players
+      ol.append(jQuery('<li></li>').text(entity.name));
+    }
+
+    // Update all pellets
+    for (var pellet of pellets) {
+      drawPellet(pellet);
     }
 
     // Draw list of players
     jQuery('#player-list').html(ol);
 
     // Send movement (if any) to server
-    if (player && (dx !== 0 || dy !== 0)) {
+    if (player.alive && (dx !== 0 || dy !== 0)) {
       socket.emit('movement', { dx, dy });
     }
 
@@ -115,10 +109,10 @@ function drawPellet(pellet) {
 // Draw map borders
 function drawBorders() {
   // Get room size (default: 400)
-  var roomSize = (player) ? player.room.size : 400;
+  var roomSize = player.room.size;
 
-  var x = (player && player.alive) ? player.x : roomSize / 2;
-  var y = (player && player.alive) ? player.y : roomSize / 2;
+  var x = (player.alive) ? player.x : roomSize / 2;
+  var y = (player.alive) ? player.y : roomSize / 2;
 
   ctx.beginPath();
   ctx.strokeStyle = 'black';

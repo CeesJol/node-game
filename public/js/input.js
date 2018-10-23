@@ -18,8 +18,6 @@ var mouse = {
   y: 0
 }
 document.body.addEventListener('mousemove', function(e) {
-    //e.preventDefault();
-
     // Store mouse input.
     mouse.x = e.clientX;
     mouse.y = e.clientY;
@@ -47,32 +45,21 @@ function handleInput() {
   dx = dy = 0;
 
   if (player && player.alive) {
-    // for (var key of keys) {
-    //   if (key === keyInput.top) {
-    //     dy = -player.speed;
-    //   } else if (key === keyInput.left) {
-    //     dx = -player.speed;
-    //   } else if (key === keyInput.down) {
-    //     dy = player.speed;
-    //   } else if (key === keyInput.right) {
-    //     dx = player.speed;
-    //   }
-    // }
-    //
-    // player.x += dx;
-    // player.y += dy;
+    // Get dx and dy
+    var tempdx = mouse.x - (width / 2);
+    var tempdy = mouse.y - (height / 2);
 
-    var tempdx = 1 * (mouse.x - (width / 2));
-    var tempdy = 1 * (mouse.y - (height / 2));
-
+    // Normalize the speed
     dx = tempdx / (Math.abs(tempdx) + Math.abs(tempdy));
     dy = tempdy / (Math.abs(tempdx) + Math.abs(tempdy));
 
+    // Mouse is at the middle of the blob, so don't move
     if (Math.abs(tempdx) < 10 && Math.abs(tempdy) < 10) {
       dx = 0;
       dy = 0;
     }
 
+    // Add delta values to player coordinates
     player.x += dx;
     player.y += dy;
 

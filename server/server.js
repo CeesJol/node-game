@@ -123,6 +123,7 @@ io.on('connection', (socket) => {
 setInterval(() => {
   rooms.rooms.forEach(function(room)  {
     for(var player of rooms.getAlivePlayers(room.id)) {
+
       // Check for player / pellet interaction
       for (var pellet of rooms.getPellets(room.id)) {
 

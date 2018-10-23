@@ -1,7 +1,17 @@
 var socket = io();
 
+// Standard room size
+var roomSize = 400;
+
 // Store the player's info
-var player;
+var player = {
+  alive: false,
+  id: undefined,
+  name: "player",
+  room: {id: undefined, size: roomSize},
+  x: roomSize / 2,
+  y: roomSize / 2
+};
 
 // Store the players, and pellets
 var players = undefined,
