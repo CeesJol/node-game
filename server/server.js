@@ -94,6 +94,9 @@ io.on('connection', (socket) => {
   // data: dx, dy
   socket.on('movement', (data) => {
     var player = rooms.getPlayer(socket.id);
+
+    if (!player) return;
+
     var room = rooms.getRoom(player.room.id);
 
     player.x += data.dx;
