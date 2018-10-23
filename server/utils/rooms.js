@@ -103,6 +103,10 @@ class Rooms {
       return room.players.filter((player) => player.id === playerId)[0];
     })[0];
 
+    if (!room) {
+      return undefined;
+    }
+
     // Select the players
     var players = this.getPlayers(room.id);
 
