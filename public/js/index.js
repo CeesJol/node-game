@@ -73,6 +73,9 @@ socket.on('died', function() {
   // Since we are dead, show join form
   jQuery('#start').show();
 
+  // Change text to death message
+  jQuery('#message').html('WELP U DIEDED LAWL');
+
   // Reset player
   player.alive = false;
   player.x = player.room.size / 2;
