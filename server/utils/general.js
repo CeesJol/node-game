@@ -21,7 +21,7 @@ var collision = (collider, collidee) => {
 }
 
 
-  // Generate random id
+// Generate random id
 var randomId = () => {
   // return Date.now() + Math.floor(Math.random() * 1e6);
 
@@ -41,4 +41,10 @@ var randomId = () => {
   return result;
 }
 
-module.exports = {isRealString, rng, getRandomColor, pyth, collision, randomId};
+// Evaporate some mass
+const rho = 0.002;
+var evaporate = (mass) => {
+  return (1 - rho) * mass;
+}
+
+module.exports = {isRealString, rng, getRandomColor, pyth, collision, randomId, evaporate};

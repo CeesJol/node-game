@@ -8,7 +8,7 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString, collision} = require('./utils/general');
+const {isRealString, collision, evaporate} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
@@ -131,7 +131,7 @@ setInterval(() => {
     // Get list of players
     var players = rooms.getAlivePlayers(room.id);
 
-    // Check collision for each player
+    // Update all players
     for (var i = 0; i < players.length; i++) {
       var player = players[i];
 
@@ -175,6 +175,19 @@ setInterval(() => {
     });
   });
 }, 1000 / TICKRATE);
+
+// Evaporation, will be sent to players on next tick
+setInterval(() => {
+  rooms.rooms.forEach(function(room) {
+    // Get list of players
+    var players = rooms.getAlivePlayers(room.id);
+
+    // Evaporate for each player
+    for (var player of players) {
+      player.size = evaporate(player.size);
+    }
+  });
+}, 1000);
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}`);
