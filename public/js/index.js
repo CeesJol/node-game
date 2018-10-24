@@ -33,7 +33,8 @@ socket.on('connect', function() {
 
 // Receive player info
 socket.on('playerInfo', function(data) {
-  player = data;
+  player = data.me;
+  pellets = data.room.pellets;
   console.log('Joined room ' + data.room.id);
 });
 
@@ -54,7 +55,6 @@ socket.on('disconnect', function() {
 // Listen to updates from the server
 socket.on('update', function(data) {
   players = data.players;
-  pellets = data.pellets;
 
   // Store player
   if (player) {
@@ -64,12 +64,24 @@ socket.on('update', function(data) {
       }
     }
   }
+
+
+
+  // Remove eaten pellets
+  for (var pellet of data.eatenPellets) {
+    pellets = pellets.filter(function(pel) {
+      return pellet.id != pel.id
+    });
+  }
+
+  // Add new pellets
+  for (var pellet of data.newPellets) {
+    pellets.push(pellet);
+  }
 });
 
 // Did you dieded to deaf?
 socket.on('died', function() {
-  console.log("WELP U DIEDED LAWL");
-
   // Since we are dead, show join form
   jQuery('#start').show();
 

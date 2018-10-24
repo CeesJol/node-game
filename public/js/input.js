@@ -30,10 +30,10 @@ jQuery("#join").click(function() {
   // Send join request to server
   socket.emit('join', { name }, function(err) {
     if (err) {
-      console.log('Whoops...');
+      // Error callback
       alert(err);
     } else {
-      console.log('Nice!');
+      // Success callback
       jQuery('#start').hide();
     }
   });

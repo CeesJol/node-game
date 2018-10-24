@@ -115,7 +115,7 @@ class Rooms {
     this.getRoom(player.room.id).pellets = pellets;
 
     // Spawn new pellet
-    this.spawnPellet(player.room.id);
+    return this.spawnPellet(player.room.id);
   }
 
   // Get a player from a room

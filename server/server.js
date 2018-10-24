@@ -22,6 +22,10 @@ var server = http.createServer(app);
 var io = socketIO(server);
 var rooms = new Rooms();
 
+// For every tick, store the pellets that were eaten and created
+var eatenPellets = [],
+    newPellets = []
+
 app.use(express.static(publicPath));
 
 // Create number of rooms
@@ -47,7 +51,7 @@ io.on('connection', (socket) => {
   socket.join(room.id);
 
   // Send player info
-  socket.emit('playerInfo', me);
+  socket.emit('playerInfo', {me, room} );
 
   // Send general info
   socket.emit('info', {
@@ -127,6 +131,10 @@ io.on('connection', (socket) => {
 
 // Update rooms
 setInterval(() => {
+  // Clean up eaten and new pellets
+  eatenPellets = [];
+  newPellets = [];
+
   rooms.rooms.forEach(function(room)  {
     // Get list of players
     var players = rooms.getAlivePlayers(room.id);
@@ -163,15 +171,18 @@ setInterval(() => {
         if (collision(player, pellet)) {
 
           // Player eats the pellet
-          rooms.eatPellet(player, pellet);
+          eatenPellets.push(pellet);
+          newPellets.push(rooms.eatPellet(player, pellet));
         }
       }
     }
 
     // Send players and pellets
+    // TODO clean up eatenPellets and newPellets
     io.to(room.id).emit('update', {
       players: rooms.getAlivePlayers(room.id),
-      pellets: rooms.getPellets(room.id)
+      eatenPellets: eatenPellets,
+      newPellets: newPellets
     });
   });
 }, 1000 / TICKRATE);
