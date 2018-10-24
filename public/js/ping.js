@@ -1,3 +1,5 @@
+var ping = 0;
+
 // Request ping every second
 setInterval(function() {
   socket.emit('requestPing', Date.now());
@@ -5,5 +7,5 @@ setInterval(function() {
 
 // Result from ping request
 socket.on('resultPing', function(timestamp) {
-  jQuery('#ping').html(`Ping: ${Date.now() - timestamp} ms`);
+  ping = Date.now() - timestamp;
 });

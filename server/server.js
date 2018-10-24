@@ -145,9 +145,11 @@ setInterval(() => {
           // If one player is smaller, this player will die
           // Otherwise, nothing happens :)
           if (player.size < ply.size) {
+            ply.size += player.size;
             rooms.kill(player);
             io.to(player.id).emit('died');
           } else if (player.size > ply.size) {
+            player.size += ply.size;
             rooms.kill(ply);
             io.to(ply.id).emit('died');
           }

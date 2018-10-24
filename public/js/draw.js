@@ -19,6 +19,8 @@ var keyInput = {
   right: 68
 }
 
+var sortedPlayers;
+
 // Initialization function that also is executed when you change the display size.
 function main() {
     canvas.width = window.innerWidth;
@@ -66,6 +68,9 @@ function update() {
 
     // Draw score
     drawScore();
+
+    // Draw ping
+    drawPing();
 
     // Send movement (if any) to server
     if (player.alive && (dx !== 0 || dy !== 0)) {
@@ -127,16 +132,23 @@ function drawScore() {
 }
 
 // Draw list of players
-// TODO sort based on highscore
 function drawPlayerNames() {
+  sortedPlayers = insertionSort(players)
+
   var marginRight = 120;
   ctx.fillStyle = 'black';
-  ctx.fillText("Leaderbord", width - marginRight, 10 + fontSize);
-  for (var i = 0; i < Math.min(10, players.length); i++) {
-    var entity = players[i];
+  ctx.fillText("Leaderboard", width - marginRight, 10 + fontSize);
+  for (var i = 0; i < Math.min(10, sortedPlayers.length); i++) {
+    var entity = sortedPlayers[i];
 
     ctx.fillText((i + 1) + ". " + entity.name, width - marginRight, 10 + fontSize * (i + 2));
   }
+}
+
+// Draw ping
+function drawPing() {
+  ctx.fillStyle = 'black';
+  ctx.fillText("ping: " + ping + " ms", 10, height - 10);
 }
 
 // Start the game.
