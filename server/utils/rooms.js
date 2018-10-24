@@ -28,6 +28,8 @@ class Rooms {
       this.spawnPellet(id);
     }
 
+    console.log('Created new room with id ' + room.id);
+
     return room;
   }
 
@@ -176,7 +178,7 @@ class Rooms {
     } else {
 
       // All rooms are full, make a new room
-      return this.rooms.addRoom();
+      return this.addRoom();
     }
   }
 

@@ -35,8 +35,6 @@ app.use(express.static(publicPath));
 // Create number of rooms
 for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
   var room = rooms.addRoom();
-
-  console.log('Created new room with id ' + room.id);
 }
 
 // Rooms have been created :)
