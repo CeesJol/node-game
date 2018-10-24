@@ -65,8 +65,6 @@ socket.on('update', function(data) {
     }
   }
 
-
-
   // Remove eaten pellets
   for (var pellet of data.eatenPellets) {
     pellets = pellets.filter(function(pel) {

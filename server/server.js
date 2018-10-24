@@ -22,6 +22,9 @@ var server = http.createServer(app);
 var io = socketIO(server);
 var rooms = new Rooms();
 
+// Store whether server is up
+var up = false;
+
 // For every tick, store the pellets that were eaten and created
 var eatenPellets = [],
     newPellets = []
@@ -34,6 +37,9 @@ for (var i = rooms.rooms.length; i < NUMBER_OF_ROOMS; i++) {
 
   console.log('Created new room with id ' + room.id);
 }
+
+// Rooms have been created :)
+up = true;
 
 io.on('connection', (socket) => {
   console.log('New user connected');
@@ -131,6 +137,8 @@ io.on('connection', (socket) => {
 
 // Update rooms
 setInterval(() => {
+  if (!up) return false;
+
   // Clean up eaten and new pellets
   eatenPellets = [];
   newPellets = [];
@@ -189,6 +197,8 @@ setInterval(() => {
 
 // Evaporation, will be sent to players on next tick
 setInterval(() => {
+  if (!up) return false;
+
   rooms.rooms.forEach(function(room) {
     // Get list of players
     var players = rooms.getAlivePlayers(room.id);
