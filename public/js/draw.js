@@ -63,13 +63,9 @@ function update() {
       drawPellet(pellet);
     }
 
-    // Draw list of players
+    // Draw list of players, score, ping
     drawPlayerNames();
-
-    // Draw score
     drawScore();
-
-    // Draw ping
     drawPing();
 
     // Send movement (if any) to server

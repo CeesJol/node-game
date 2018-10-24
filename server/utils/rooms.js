@@ -139,6 +139,7 @@ class Rooms {
   }
 
   // Remove a player from a room
+  // TODO remove the room if empty?
   removePlayer(playerId) {
     // Find the player's room
     var room = this.rooms.filter((room) => {
