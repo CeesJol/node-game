@@ -135,7 +135,7 @@ function drawScore() {
 function drawPlayerNames() {
   sortedPlayers = insertionSort(players)
 
-  var marginRight = 120;
+  var marginRight = 140;
   ctx.fillStyle = 'black';
   ctx.fillText("Leaderboard", width - marginRight, 10 + fontSize);
   for (var i = 0; i < Math.min(10, sortedPlayers.length); i++) {

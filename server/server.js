@@ -8,11 +8,12 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString, collision, evaporate} = require('./utils/general');
+const {isRealString, pyth, collision, evaporate} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
 const TICKRATE = 32;
+const EVAP_TICKRATE = 1;
 const MAX_USERNAME_LENGTH = 10;
 
 const publicPath = path.join(__dirname, '../public');
@@ -160,12 +161,13 @@ setInterval(() => {
 
           // If one player is smaller, this player will die
           // Otherwise, nothing happens :)
+          // TODO implement threshold between the two player sizes
           if (player.size < ply.size) {
-            ply.size += player.size;
+            ply.size = pyth(player.size, ply.size);
             rooms.kill(player);
             io.to(player.id).emit('died');
           } else if (player.size > ply.size) {
-            player.size += ply.size;
+            player.size = pyth(player.size, ply.size);
             rooms.kill(ply);
             io.to(ply.id).emit('died');
           }
@@ -186,11 +188,10 @@ setInterval(() => {
     }
 
     // Send players and pellets
-    // TODO clean up eatenPellets and newPellets
     io.to(room.id).emit('update', {
       players: rooms.getAlivePlayers(room.id),
-      eatenPellets: eatenPellets,
-      newPellets: newPellets
+      eatenPellets,
+      newPellets
     });
   });
 }, 1000 / TICKRATE);
@@ -208,7 +209,7 @@ setInterval(() => {
       player.size = evaporate(player.size);
     }
   });
-}, 1000);
+}, 1000 / EVAP_TICKRATE);
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}`);
