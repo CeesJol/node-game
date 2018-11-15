@@ -111,6 +111,9 @@ io.on('connection', (socket) => {
     data.dx = (data.dx / sum) * player.speed;
     data.dy = (data.dy / sum) * player.speed;
 
+    player.dx = data.dx;
+    player.dy = data.dy;
+
     player.x += data.dx;
     player.y += data.dy;
 
@@ -127,6 +130,20 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Player sends mass
+  socket.on('sendMassRequest', () => {
+    var player = rooms.getPlayer(socket.id);
+
+    // TODO implement minimum size
+    if (player.size > 0) {
+      // Add mass object to map
+      var mass = rooms.spawnMass(player.room.id, player.x + player.dx * player.size, player.y + player.dy * player.size, player.dx, player.dy, player.color);
+
+      // Remove mass from player
+      player.size = Math.sqrt(Math.pow(player.size, 2) - Math.pow(mass.size, 2));
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected from server');
 
@@ -138,13 +155,14 @@ io.on('connection', (socket) => {
 setInterval(() => {
   if (!up) return false;
 
-  // Clean up eaten and new pellets
-  eatenPellets = [];
-  newPellets = [];
-
   rooms.rooms.forEach(function(room)  {
-    // Get list of players
+    // Clean up eaten and new pellets
+    eatenPellets = [];
+    newPellets = [];
+
     var players = rooms.getAlivePlayers(room.id);
+    var pellets = rooms.getPellets(room.id);
+    var masses = rooms.getMasses(room.id);
 
     // Update all players
     for (var i = 0; i < players.length; i++) {
@@ -173,7 +191,7 @@ setInterval(() => {
       }
 
       // Check for player / pellet interaction
-      for (var pellet of rooms.getPellets(room.id)) {
+      for (var pellet of pellets) {
 
         // Check for collision between two blobs: player and pellet
         if (collision(player, pellet)) {
@@ -183,11 +201,58 @@ setInterval(() => {
           newPellets.push(rooms.eatPellet(player, pellet));
         }
       }
+
+      // Check for player / mass interaction
+      for (var mass of masses) {
+
+        // Check for collision between two blobs: player and mass
+        if (collision(player, mass)) {
+
+          // Player eats the mass
+          // TODO only eat mass if big enough? is this a thing?
+          // TODO make this a method in general.js
+          player.size = pyth(player.size, mass.size);
+
+          var index = masses.indexOf(mass);
+          if (index > -1) {
+            masses.splice(index, 1);
+          }
+
+        }
+      }
     }
 
-    // Send players and pellets
+    // Update all masses
+    for (var mass of masses) {
+      mass.x += mass.dx;
+      mass.y += mass.dy;
+
+      // Within border check
+      // TODO also implement this locally?
+      if (mass.x < mass.size) {
+        mass.x = mass.size;
+      } else if (mass.x > room.size - mass.size) {
+        mass.x = room.size - mass.size;
+      }
+      if (mass.y < mass.size) {
+        mass.y = mass.size;
+      } else if (mass.y > room.size - mass.size) {
+        mass.y = room.size - mass.size;
+      }
+
+      // Friction
+      mass.dx *= mass.friction;
+      mass.dy *= mass.friction;
+
+      // If mass is moving very slowly, stop moving it
+      if (Math.abs(mass.dx) < mass.epsilon) mass.dx = 0;
+      if (Math.abs(mass.dy) < mass.epsilon) mass.dy = 0;
+    }
+
+    // Send players, pellets and masses
     io.to(room.id).emit('update', {
       players: rooms.getAlivePlayers(room.id),
+      masses: rooms.getMasses(room.id),
       eatenPellets,
       newPellets
     });

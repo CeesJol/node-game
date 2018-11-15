@@ -4,6 +4,8 @@ class Player {
   constructor(id, roomId, roomSize) {
     this.x = roomSize / 2;
     this.y = roomSize / 2;
+    this.dx = 0;
+    this.dy = 0;
     this.id = id;
     this.room = {
       id: roomId,

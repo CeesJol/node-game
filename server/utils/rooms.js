@@ -1,5 +1,6 @@
 const {Player} = require('./player');
 const {Pellet} = require('./pellet');
+const {Mass} = require('./mass');
 const {randomId, rng, collision} = require('./general');
 
 const MAX_PLAYER_SIZE = 3;          // Maximum amount of players in one room
@@ -19,8 +20,9 @@ class Rooms {
     var id = randomId();
     var size = DEFAULT_ROOM_SIZE;
     var players = players || [];
+    var masses = [];
     var pellets = [];
-    var room = {id, size, players, pellets};
+    var room = {id, size, players, masses, pellets};
     this.rooms.push(room);
 
     // Spawn some pellets
@@ -96,6 +98,20 @@ class Rooms {
     return pellet;
   }
 
+  // Add a mass to the room
+  spawnMass(roomId, x, y, dx, dy, color) {
+    var mass = new Mass(roomId, x, y, dx, dy, color);
+
+    this.getRoom(roomId).masses.push(mass);
+
+    return mass;
+  }
+
+  // Get a list of masses
+  getMasses(id) {
+    return this.getRoom(id).masses;
+  }
+
   // Get a list of pellets in a room
   getPellets(roomId) {
     return this.getRoom(roomId).pellets;
@@ -118,6 +134,12 @@ class Rooms {
 
     // Spawn new pellet
     return this.spawnPellet(player.room.id);
+  }
+
+  // Player eats a mass
+  eatMass(player, mass) {
+    // Increase player size
+    player.size += mass.size;
   }
 
   // Get a player from a room

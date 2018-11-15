@@ -18,6 +18,7 @@ var player = {
 
 // Store the players, and pellets
 var players = [],
+    masses = [],
     pellets = [];
 
 // Store maxlength. default 10
@@ -35,6 +36,8 @@ socket.on('connect', function() {
 socket.on('playerInfo', function(data) {
   player = data.me;
   pellets = data.room.pellets;
+  masses = data.room.masses;
+  console.log(data.room.masses);
   console.log('Joined room ' + data.room.id);
 });
 
@@ -55,6 +58,7 @@ socket.on('disconnect', function() {
 // Listen to updates from the server
 socket.on('update', function(data) {
   players = data.players;
+  masses = data.masses;
 
   // Store player
   if (player) {

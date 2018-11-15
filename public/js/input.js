@@ -2,14 +2,31 @@
 var keys = [];
 
 document.addEventListener('keydown', function(e) {
-    // Set keys value to true.
-    if (!contains(keys, e.keyCode)) keys.push(e.keyCode);
+  if (player && player.alive) {
+    // Send mass
+    if (e.keyCode == keyInput.w && !keys[keyInput.w]) {
+      console.log('w');
+
+      keys[keyInput.w] = true;
+
+      // Send request to send mass
+      // note, this is a (send mass) request, not a send (mass request) :)
+      // u know them code gewd when u see these comments amritie
+      socket.emit('sendMassRequest');
+    }
+
+    // Split
+    if (e.keyCode == keyInput.space && !keys[keyInput.space]) {
+      console.log('split');
+
+      keys[keyInput.space] = true;
+    }
+  }
 });
 
 document.body.addEventListener('keyup', function(e) {
-    // Set keys value to false.
-    index = keys.indexOf(e.keyCode);
-    if (index > -1) keys.splice(index, 1);
+  // Set key value to false
+  keys[e.keyCode] = false;
 });
 
 // ----- Mouse inputs -----
@@ -17,31 +34,14 @@ var mouse = {
   x: 0,
   y: 0
 }
+
 document.body.addEventListener('mousemove', function(e) {
-    // Store mouse input.
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+  // Store mouse input.
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
 });
 
-// ----- Join button -----
-jQuery("#join").click(function() {
-  var name = jQuery('#name').val();
-
-  // Send join request to server
-  socket.emit('join', { name }, function(err) {
-    if (err) {
-      // Error callback
-      alert(err);
-    } else {
-      // Success callback
-      jQuery('#start').hide();
-    }
-  });
-});
-
-
-// ----- Handle the input from the user -----
-function handleInput() {
+function handleMouseInput() {
   dx = dy = 0;
 
   if (player && player.alive) {
@@ -77,3 +77,19 @@ function handleInput() {
     }
   }
 }
+
+// ----- Join button -----
+jQuery("#join").click(function() {
+  var name = jQuery('#name').val();
+
+  // Send join request to server
+  socket.emit('join', { name }, function(err) {
+    if (err) {
+      // Error callback
+      alert(err);
+    } else {
+      // Success callback
+      jQuery('#start').hide();
+    }
+  });
+});

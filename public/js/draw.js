@@ -13,68 +13,71 @@ var dx = 0,
 // input variables
 // TODO make a settings file
 var keyInput = {
-  top: 87,
-  left: 65,
-  down: 83,
-  right: 68
+  w: 87,
+  space: 32
 }
 
 var sortedPlayers;
 
 // Initialization function that also is executed when you change the display size.
 function main() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    width = canvas.width;
-    height = canvas.height;
+  width = canvas.width;
+  height = canvas.height;
 
-    ctx.font = fontSize + 'px Arial';
+  ctx.font = fontSize + 'px Arial';
 } main();
 
-// TODO ffs all these if(player)s are annoying
 function update() {
-    // Clear the current display.
-    ctx.clearRect(0, 0, width, height);
+  // Clear the current display.
+  ctx.clearRect(0, 0, width, height);
 
-    ctx.beginPath();
+  ctx.beginPath();
 
-    // Handle local input
-    handleInput();
+  // Handle local input
+  handleMouseInput();
+  // handleKeyInput();
 
-    // Draw map border
-    drawBorders();
+  // Draw map border
+  drawBorders();
 
-    // Update all players
-    for (var entity of players) {
-      if (entity.id === player.id) {
+  // Update all players
+  for (var entity of players) {
+    if (entity.id === player.id) {
 
-        // Draw this player
-        drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
-      } else {
+      // Draw this player
+      drawPlayer(width / 2, height / 2, player.color, player.size, player.name);
+    } else {
 
-        // Draw some other player
-        drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
-      }
+      // Draw some other player
+      drawPlayer(width / 2 - player.x + entity.x, height / 2 - player.y + entity.y, entity.color, entity.size, entity.name);
     }
+  }
 
-    // Update all pellets
-    for (var pellet of pellets) {
-      drawPellet(pellet);
-    }
+  // Draw all pellets
+  for (var pellet of pellets) {
+    drawPellet(pellet);
+  }
 
-    // Draw list of players, score, ping
-    drawPlayerNames();
-    drawScore();
-    drawPing();
+  // Draw all masses
+  for (var mass of masses) {
+    drawMass(mass);
+  }
 
-    // Send movement (if any) to server
-    if (player.alive && (dx !== 0 || dy !== 0)) {
-      socket.emit('movement', { dx, dy });
-    }
+  // Draw list of players, score, ping
+  drawPlayerNames();
+  drawScore();
+  drawPing();
 
-    // Draw the pixels on the screen.
-    window.requestAnimationFrame(update);
+  // Send movement (if any) to server
+  if (player.alive && (dx !== 0 || dy !== 0)) {
+    socket.emit('movement', { dx, dy });
+  }
+
+  // Draw the pixels on the screen.
+  window.requestAnimationFrame(update);
 }
 
 // Draw a player
@@ -100,6 +103,15 @@ function drawPellet(pellet) {
   ctx.beginPath();
   ctx.fillStyle = 'red';
   ctx.arc(width / 2 - player.x + pellet.x, height / 2 - player.y + pellet.y, pellet.size, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.closePath();
+}
+
+// Draw a mass
+function drawMass(mass) {
+  ctx.beginPath();
+  ctx.fillStyle = mass.color;
+  ctx.arc(width / 2 - player.x + mass.x, height / 2 - player.y + mass.y, mass.size, 0, 2 * Math.PI);
   ctx.fill();
   ctx.closePath();
 }
