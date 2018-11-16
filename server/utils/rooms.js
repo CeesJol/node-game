@@ -1,7 +1,7 @@
 const {Player} = require('./player');
 const {Pellet} = require('./pellet');
 const {Mass} = require('./mass');
-const {randomId, rng, collision} = require('./general');
+const {randomId, rng, collision, pyth} = require('./general');
 
 const MAX_PLAYER_SIZE = 3;          // Maximum amount of players in one room
 const DEFAULT_ROOM_SIZE = 600;      // Default size of the room (both width and height)
@@ -120,16 +120,11 @@ class Rooms {
   // Player eats a pellet
   eatPellet(player, pellet) {
     // Increase player size
-    player.size += pellet.value;
+    player.size = pyth(player.size, pellet.size);
 
     // Remove pellet
-    // Get pellets array
     var pellets = this.getPellets(player.room.id);
-
-    // Remove it from the array
     pellets = pellets.filter((pel) => pel.id !== pellet.id);
-
-    // Set pellets
     this.getRoom(player.room.id).pellets = pellets;
 
     // Spawn new pellet
@@ -139,7 +134,21 @@ class Rooms {
   // Player eats a mass
   eatMass(player, mass) {
     // Increase player size
-    player.size += mass.size;
+    player.size = pyth(player.size, mass.size);
+
+    // Remove mass
+    var masses = this.getMasses(player.room.id);
+    masses = masses.filter((ma) => ma.id !== mass.id);
+    this.getRoom(player.room.id).masses = masses;
+
+    // Old way of removing mass
+    // var index = masses.indexOf(mass);
+    // if (index > -1) {
+    //   masses.splice(index, 1);
+    // }
+
+    // Return this mass
+    return mass;
   }
 
   // Get a player from a room

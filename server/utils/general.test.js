@@ -1,6 +1,6 @@
 const expect = require('expect');
 
-var {isRealString, pyth, collision} = require('./general');
+var {isRealString, pyth, pythNegative, collision} = require('./general');
 
 describe('isRealString', () => {
   it('should reject non-string values', () => {
@@ -27,6 +27,12 @@ describe('isRealString', () => {
 
     expect(res).toEqual(5);
   });
+
+  it('should return pyth of 13 minus 12', () => {
+    var res = pythNegative(13, 12);
+
+    expect(res).toEqual(5);
+  })
 
   it('should collide', () => {
     var objA = {

@@ -135,7 +135,7 @@ function drawBorders() {
 function drawScore() {
   if (player.alive) {
     ctx.fillStyle = 'black';
-    ctx.fillText("score: " + Math.floor(player.size), 10, 10 + fontSize);
+    ctx.fillText("score: " + Math.floor(Math.pow(player.size, 2) / 100), 10, 10 + fontSize);
   }
 }
 

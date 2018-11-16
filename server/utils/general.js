@@ -16,6 +16,10 @@ var pyth = (a, b) => {
   return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 }
 
+var pythNegative = (a, b) => {
+  return Math.sqrt(Math.pow(a, 2) - Math.pow(b, 2));
+}
+
 var collision = (collider, collidee) => {
   return pyth(collider.x - collidee.x, collider.y - collidee.y) <= collider.size + collidee.size;
 }
@@ -43,8 +47,8 @@ var randomId = () => {
 
 // Evaporate some mass
 const rho = 0.002;
-var evaporate = (mass) => {
-  return (1 - rho) * mass;
+var evaporate = (mass, tickrate) => {
+  return (1 - rho / tickrate) * mass;
 }
 
-module.exports = {isRealString, rng, getRandomColor, pyth, collision, randomId, evaporate};
+module.exports = {isRealString, rng, getRandomColor, pyth, pythNegative, collision, randomId, evaporate};

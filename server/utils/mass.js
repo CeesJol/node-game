@@ -1,4 +1,6 @@
-const {getRandomColor, randomId} = require('./general');
+const {randomId} = require('./general');
+
+const MASS_SIZE = 15;
 
 class Mass {
   constructor(roomId, x, y, dx, dy, color) {
@@ -17,7 +19,11 @@ class Mass {
       id: roomId
     }
     this.color = color;
-    this.size = 15; // radius of blob
+    this.size = MASS_SIZE; // radius of blob
+  }
+
+  static get MASS_SIZE() {
+    return MASS_SIZE;
   }
 };
 

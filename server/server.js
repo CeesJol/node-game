@@ -8,12 +8,13 @@ const socketIO = require('socket.io');
 // Utils imports
 const {Rooms} = require('./utils/rooms');
 const {Player} = require('./utils/player');
-const {isRealString, pyth, collision, evaporate} = require('./utils/general');
+const {Mass} = require('./utils/mass');
+const {isRealString, pyth, pythNegative, collision, evaporate} = require('./utils/general');
 
 // Constants
 const NUMBER_OF_ROOMS = 2;
 const TICKRATE = 32;
-const EVAP_TICKRATE = 1;
+const EVAP_TICKRATE = 2;
 const MAX_USERNAME_LENGTH = 10;
 
 const publicPath = path.join(__dirname, '../public');
@@ -134,13 +135,12 @@ io.on('connection', (socket) => {
   socket.on('sendMassRequest', () => {
     var player = rooms.getPlayer(socket.id);
 
-    // TODO implement minimum size
-    if (player.size > 0) {
+    if (player.size > Mass.MASS_SIZE) {
       // Add mass object to map
       var mass = rooms.spawnMass(player.room.id, player.x + player.dx * player.size, player.y + player.dy * player.size, player.dx, player.dy, player.color);
 
       // Remove mass from player
-      player.size = Math.sqrt(Math.pow(player.size, 2) - Math.pow(mass.size, 2));
+      player.size = pythNegative(player.size, mass.size);
     }
   });
 
@@ -211,12 +211,7 @@ setInterval(() => {
           // Player eats the mass
           // TODO only eat mass if big enough? is this a thing?
           // TODO make this a method in general.js
-          player.size = pyth(player.size, mass.size);
-
-          var index = masses.indexOf(mass);
-          if (index > -1) {
-            masses.splice(index, 1);
-          }
+          rooms.eatMass(player, mass);
 
         }
       }
@@ -269,7 +264,7 @@ setInterval(() => {
 
     // Evaporate for each player
     for (var player of players) {
-      player.size = evaporate(player.size);
+      player.size = evaporate(player.size, EVAP_TICKRATE);
     }
   });
 }, 1000 / EVAP_TICKRATE);
