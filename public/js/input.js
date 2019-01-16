@@ -20,6 +20,9 @@ document.addEventListener('keydown', function(e) {
       console.log('split');
 
       keys[keyInput.space] = true;
+
+      // Send request to split
+      socket.emit('splitRequest');
     }
   }
 });

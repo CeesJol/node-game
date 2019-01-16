@@ -16,6 +16,7 @@ const NUMBER_OF_ROOMS = 2;
 const TICKRATE = 32;
 const EVAP_TICKRATE = 2;
 const MAX_USERNAME_LENGTH = 10;
+const rho = 0.002; // evaporation factor
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -264,7 +265,7 @@ setInterval(() => {
 
     // Evaporate for each player
     for (var player of players) {
-      player.size = evaporate(player.size, EVAP_TICKRATE);
+      player.size = evaporate(player.size, EVAP_TICKRATE, rho);
     }
   });
 }, 1000 / EVAP_TICKRATE);

@@ -3,8 +3,8 @@ const {Pellet} = require('./pellet');
 const {Mass} = require('./mass');
 const {randomId, rng, collision, pyth} = require('./general');
 
-const MAX_PLAYER_SIZE = 3;          // Maximum amount of players in one room
-const DEFAULT_ROOM_SIZE = 600;      // Default size of the room (both width and height)
+const MAX_PLAYER_SIZE = 10;          // Maximum amount of players in one room
+const DEFAULT_ROOM_SIZE = 2000;      // Default size of the room (both width and height)
 const CHUNK_SIZE = 200;             // Size of one chunk
 const PELLETS_MULTIIPLIER = 0.02;   // Sets amount of pellets in the room
 
